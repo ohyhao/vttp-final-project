@@ -1,6 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Like, NewTweet, Quote, ReplyTweet, Retweet, Tweet } from 'src/app/models';
@@ -31,10 +32,13 @@ export class HomeComponent implements OnInit {
     private tweetSvc: TweetService,
     private userSvc: UserService,
     private fb: FormBuilder,
+    private title: Title
     ) {
   }
   
   ngOnInit(): void {
+    this.title.setTitle('Home / Tweeter')
+
     this.tweetForm = this.fb.group({
       text: this.fb.control<string>('', [ Validators.required ]),
       user_id: this.fb.control<number>(this.user.id)

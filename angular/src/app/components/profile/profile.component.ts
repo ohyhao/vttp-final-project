@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AppUser, Count, Like, ReplyTweet, Retweet, Tweet } from 'src/app/models';
@@ -41,7 +42,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     public router: Router,
     private activatedRoute: ActivatedRoute,
     private tweetSvc: TweetService,
-    private modalService: NgbModal) {
+    private modalService: NgbModal,
+    private title: Title) {
 
       this.username = this.activatedRoute.snapshot.params['username']
 
@@ -74,6 +76,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }    
 
   ngOnInit(): void {
+    this.title.setTitle('Profile')
     
     this.userSvc.getUserDetails(this.username)
     .then(result => {

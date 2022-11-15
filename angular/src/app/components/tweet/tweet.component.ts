@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Like, ReplyTweet, Retweet, Tweet } from 'src/app/models';
 import { TweetService } from 'src/app/services/tweet.service';
@@ -24,9 +25,12 @@ export class TweetComponent implements OnInit {
     private userSvc: UserService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private title: Title) { }
 
   ngOnInit(): void {
+    this.title.setTitle('Tweet');
+
     this.username = this.activatedRoute.snapshot.params['username']
     this.id = this.activatedRoute.snapshot.params['id']
     console.info(' >>> username: ', this.username)

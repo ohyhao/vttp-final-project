@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Credentials } from 'src/app/models';
 import { UserService } from 'src/app/services/user.service';
@@ -15,9 +16,11 @@ export class LoginComponent implements OnInit {
   showPassword!: boolean;
   loginForm!: FormGroup
 
-  constructor(private fb: FormBuilder, private userSvc: UserService, private router: Router) { }
+  constructor(private fb: FormBuilder, private userSvc: UserService, private router: Router, private title: Title) { }
 
   ngOnInit(): void {
+    this.title.setTitle('Tweeter')
+
     this.loginForm = this.fb.group({
       email: this.fb.control<string>('', [ Validators.required, Validators.email ]),
       password: this.fb.control<string>('', [ Validators.required ]),

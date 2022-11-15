@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { Registration } from 'src/app/models';
 import { UserService } from 'src/app/services/user.service';
@@ -16,9 +17,11 @@ export class RegisterComponent implements OnInit {
   showPassword!: boolean
   registerForm!: FormGroup
 
-  constructor(private fb: FormBuilder, private userSvc: UserService, private router: Router) { }
+  constructor(private fb: FormBuilder, private userSvc: UserService, private router: Router, private title: Title) { }
 
   ngOnInit(): void {
+    this.title.setTitle('Register')
+
     this.registerForm = this.fb.group({
       username: this.fb.control<string>('', [ Validators.required ]),
       name: this.fb.control<string>('', [Validators.required]),
