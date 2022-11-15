@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tweeter-deploy
+  labels:
+    name: tweeter
+  namespace: myns
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      name: tweeter-po
+  template:
+    metadata:
+      name: tweeter-po
+      labels:
+        name: tweeter-po
+    spec:
+      containers:
+      - name: tweeter-container
+        image: yonghao94/tweeter:0.0.1-SNAPSHOT
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: tweeter-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tweeter-svc-lb
+  namespace: myns
+spec:
+  type: LoadBalancer
+  selector:
+    name: tweeter-po
+  ports:
+    - name: p80
+      port: 80
+      targetPort: 8080
+    
