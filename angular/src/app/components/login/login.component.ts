@@ -13,8 +13,9 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class LoginComponent implements OnInit {
 
-  showPassword!: boolean;
+  showPassword!: boolean
   loginForm!: FormGroup
+  
 
   constructor(private fb: FormBuilder, private userSvc: UserService, private router: Router, private title: Title) { }
 

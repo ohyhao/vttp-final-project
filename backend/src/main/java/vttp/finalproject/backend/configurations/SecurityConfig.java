@@ -29,7 +29,7 @@ public class SecurityConfig {
         http.csrf()
             .disable()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-            .authorizeRequests().antMatchers("/*", "/api/authenticate", "/api/register").permitAll()
+            .authorizeRequests().antMatchers("/*", "/assets/*", "/api/authenticate", "/api/register").permitAll()
             .anyRequest().authenticated()
             .and().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
