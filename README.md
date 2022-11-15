@@ -1,4 +1,4 @@
-# vttp-final-project
+# Tweeter
 
 Social media app modeled after Twitter
 
