@@ -20,12 +20,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule} from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { SearchComponent } from './components/search/search.component';
 
 const appRoutes: Routes = [
   {path: '', component: LoginComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'home', component: HomeComponent},
+  {path: 'search', component: SearchComponent},
   {path: ':username', component: ProfileComponent},
   {path: ':username/tweets', component: ProfileComponent},
   {path: ':username/retweets', component: ProfileComponent},
@@ -43,10 +45,12 @@ const appRoutes: Routes = [
     HomeComponent,
     ProfileComponent,
     TweetComponent,
+    SearchComponent
   ],
+
   imports: [
     BrowserModule,
-    RouterModule.forRoot(appRoutes, { useHash:true }),
+    RouterModule.forRoot(appRoutes, { useHash: true }),
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

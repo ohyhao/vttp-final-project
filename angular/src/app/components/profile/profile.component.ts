@@ -35,6 +35,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   loggedUser = JSON.parse(localStorage.getItem('currentUser')!)
   closeResult!: string
   navigationSubscription: any
+  
 
   constructor(
     private fb: FormBuilder,

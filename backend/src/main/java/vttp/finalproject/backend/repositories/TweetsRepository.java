@@ -61,6 +61,19 @@ public class TweetsRepository {
         return tweets;
     }
 
+    public List<Tweet> searchTweets (String search) {
+
+        List<Tweet> tweets = new ArrayList<>();
+        final SqlRowSet rs = template.queryForRowSet(SQL_SEARCH_TWEETS, ("%"+search+"%"));
+        while (rs.next()) {
+
+            Tweet tweet = Tweet.populate(rs);
+            tweets.add(tweet);
+        }
+        populateUserDetails(tweets);
+        return tweets;
+    }
+
     public List<Tweet> findRepliesById (Integer user_id) {
 
         List<Tweet> replies = new ArrayList<>();

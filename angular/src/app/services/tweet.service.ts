@@ -15,14 +15,20 @@ export class TweetService {
 
     constructor(private http: HttpClient) {}
 
-    getAllTweets(limit: number, offset: number): Promise<Tweet[]> {
-
-        const params = new HttpParams()
-            .set("limit", limit)
-            .set("offset", offset)
+    getAllTweets(): Promise<Tweet[]> {
            
         return firstValueFrom(
-            this.http.get<Tweet[]>('/api/posts', { params }))   
+            this.http.get<Tweet[]>('/api/posts', httpHeaders))   
+    }
+
+    searchTweets(search: string): Promise<Tweet[]> {
+
+        const params = new HttpParams()
+            .set("search", search)
+        
+            return firstValueFrom(
+                this.http.get<Tweet[]>('/api/posts/search', { params })
+            )
     }
 
     newTweet(newTweet: NewTweet): Promise<any> {
@@ -116,4 +122,5 @@ export class TweetService {
             this.http.get<Count>(`/api/posts/count/${id}`, httpHeaders)
         )
     }
+
 }

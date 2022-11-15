@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html>
     <body>
-        <div
-            infinite-scroll
-            [infiniteScrollDistance]="distance"
-            [infiniteScrollThrottle]="throttle"
-            (scrolled)="onScroll()"
-            >
         <mat-drawer-container class="container" >
         <mat-drawer mode="side" opened class="drawer">
             <div>
@@ -21,9 +15,9 @@
                     <img src="assets/svg/profile.svg" class="sidebar-item-icon">
                     <div class="icon-label">Profile</div>
                 </div>
-                <div class="sidebar-item">
-                    <img src="assets/svg/more.svg" class="sidebar-item-icon">
-                    <div class="icon-label">More</div>
+                <div [routerLink]="'/search'" class="sidebar-item">
+                    <img src="assets/svg/search.svg" class="sidebar-item-icon">
+                    <div class="icon-label">Search</div>
                 </div>
             </div>
             <div>
@@ -35,7 +29,7 @@
     
         <mat-drawer-content class="drawer-content">
             <mat-card class="card">
-                    <mat-card-title>Quote of the day</mat-card-title>
+                    <mat-card-title>Quote of the Day</mat-card-title>
                     <mat-card-content>"{{ quote.quote }}" - {{ quote.author }}</mat-card-content>
             </mat-card>
             <mat-card class="card">
@@ -87,7 +81,6 @@
                 </div>
             </mat-drawer-content>
         </mat-drawer-container>
-    </div>
 </body>
 
 </html>

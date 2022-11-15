@@ -43,11 +43,6 @@
     cursor: pointer;
 }
 
-body {
-    display: flex;
-    justify-content: space-between;
-}
-
 .tweets-counter-container{
     font-weight: 700;
     display: flex;

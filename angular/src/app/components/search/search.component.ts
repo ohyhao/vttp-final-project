@@ -1,68 +1,42 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PageEvent } from '@angular/material/paginator';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { Like, NewTweet, Quote, ReplyTweet, Retweet, Tweet } from 'src/app/models';
+import { Like, ReplyTweet, Retweet, Search, Tweet } from 'src/app/models';
 import { TweetService } from 'src/app/services/tweet.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.css']
 })
-export class HomeComponent implements OnInit {
+export class SearchComponent implements OnInit {
 
-  tweetForm!: FormGroup
+  searchForm!: FormGroup
   replyForm!: FormGroup
-  numberForm!: FormGroup
-  tweets: Tweet[] = []
-  quote!: Quote
   user = JSON.parse(localStorage.getItem('currentUser')!)
   username = this.user.username
-  defaultImage = "src\assets\svg\profile.svg"
+  tweets: Tweet[] = []
   
+
   constructor(
     private router: Router,
     private tweetSvc: TweetService,
     private userSvc: UserService,
     private fb: FormBuilder,
     private title: Title
-    ) {
-  }
-  
+  ) { }
+
   ngOnInit(): void {
-    this.title.setTitle('Home / Tweeter')
+    this.title.setTitle('Search / Tweeter')
 
-    this.tweetForm = this.fb.group({
-      text: this.fb.control<string>('', [ Validators.required ]),
-      user_id: this.fb.control<number>(this.user.id)
+    this.searchForm = this.fb.group({
+      search: this.fb.control<string>('', [ Validators.required ]),
     })
 
-    this.replyForm = this.fb.group({
-      reply: this.fb.control<string>('', [ Validators.required ]),
-      user_id: this.fb.control<number>(this.user.id)
-    })
-    
-    this.tweetSvc.getQuote()
-    .then(result => {
-      this.quote = result
-      console.info('>>> quote: ', this.quote)
-    }).catch(error => {
-      console.info('>>> error: ', error)
-    })
-    
-    this.tweetSvc.getAllTweets()
-      .then(result => {
-        this.tweets = result
-        console.info('>>> tweets: ', this.tweets)
-      }).catch(error => {
-        console.info('>>> error: ', error)
-      })
   }
-  
+
   onClick(id: number) {
     for (let tweet of this.tweets) {
       if (tweet.id == id) {
@@ -71,19 +45,17 @@ export class HomeComponent implements OnInit {
     }   
   }
 
-  processTweet() {
-    const tweet: NewTweet = this.tweetForm.value
-    console.info('>>> new tweet: ', tweet)
-    this.tweetSvc.newTweet(tweet)
+  processSearch() {
+    const search: Search = this.searchForm.value
+    this.tweetSvc.searchTweets(search.search)
       .then(result => {
-        console.info('>>> result: ', result)
-        this.ngOnInit()
-    }).catch(error => {
-      console.info('>>> error: ', error)
-        alert("Tweet failed")
-        this.tweetForm.reset()
-      }
-    )
+        this.tweets = result;
+        console.info(' >>> search: ', result)
+        location.reload
+      }).catch(error => {
+        console.info(' >>> error: ', error)
+        alert("There are no tweets!")
+      })
   }
 
   deleteTweet(id: number) {
@@ -151,7 +123,6 @@ export class HomeComponent implements OnInit {
         console.info(' >>> error: ', error)
       })
   }
-  
 
   logout() {
     localStorage.removeItem('currentUser')
@@ -163,5 +134,6 @@ export class HomeComponent implements OnInit {
       })
     this.router.navigate(['/'])
   }
+
 
 }

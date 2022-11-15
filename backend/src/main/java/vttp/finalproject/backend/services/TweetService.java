@@ -75,10 +75,10 @@ public class TweetService {
         }
     }
     
-    public List<Tweet> getAllTweets(Integer limit, Integer offset) {
+    public List<Tweet> getAllTweets() {
 
         List<Tweet> tweets = new ArrayList<>();
-        final SqlRowSet rs = template.queryForRowSet(SQL_GET_ALL_TWEETS, limit, offset);
+        final SqlRowSet rs = template.queryForRowSet(SQL_GET_ALL_TWEETS);
         while (rs.next()) {
             Tweet tweet = Tweet.populate(rs);
             tweets.add(tweet);
@@ -95,6 +95,10 @@ public class TweetService {
 
         tweetRepo.populateUserDetails(tweet);
         return tweet;
+    }
+
+    public List<Tweet> searchTweets (String search) {
+        return tweetRepo.searchTweets(search);
     }
 
     public List<Tweet> getTweetsById (Integer userId) {

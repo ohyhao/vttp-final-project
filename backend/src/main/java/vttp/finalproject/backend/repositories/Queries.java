@@ -24,7 +24,7 @@ public class Queries {
         "select * from tweets where id = ?";
 
     public static final String SQL_GET_ALL_TWEETS = 
-        "select * from tweets where tweet_id is null order by date_created desc limit ? offset ?";
+        "select * from tweets where tweet_id is null order by date_created desc";
 
     public static final String SQL_DELETE_TWEET_BY_ID =
         "delete from tweets where id = ?";
@@ -76,5 +76,8 @@ public class Queries {
     
     public static final String SQL_GET_TOTAL_TWEET_COUNT_BY_ID =
         "select (select count(*) from tweets where user_id = ?) + (select count(*) from retweets where user_id = ?) as count";
+
+    public static final String SQL_SEARCH_TWEETS =
+        "select * from tweets where tweet like ? order by date_created desc";
     
 }

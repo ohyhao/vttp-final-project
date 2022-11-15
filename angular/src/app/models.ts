@@ -66,3 +66,7 @@ export interface Quote {
 export interface Count {
     count: number
 }
+
+export interface Search {
+    search: string
+}

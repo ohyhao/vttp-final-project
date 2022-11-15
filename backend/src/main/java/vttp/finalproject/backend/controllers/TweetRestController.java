@@ -45,12 +45,40 @@ public class TweetRestController {
     private QuoteService quoteSvc;
 
     @GetMapping(path = "/posts")
-    public ResponseEntity<String> getAllTweets(
-        @RequestParam(defaultValue = "3") Integer limit, @RequestParam(defaultValue = "0") Integer offset) {
+    public ResponseEntity<String> getAllTweets() {
 
         Response resp;
 
-        List<Tweet> tweets = tweetSvc.getAllTweets(limit, offset);
+        List<Tweet> tweets = tweetSvc.getAllTweets();
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (Tweet tweet: tweets) {
+            arrayBuilder.add(Tweet.toJson(tweet));
+        }
+
+        if (tweets.isEmpty()) {
+            resp = new Response();
+                resp.setCode(400);
+                resp.setMessage("There are no tweets!");
+                return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(arrayBuilder.build().toString());
+        } else {
+            resp = new Response();
+                resp.setCode(200);
+                resp.setMessage("Tweets successfully retrieved");
+                resp.setData(tweets.toString());
+                return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(arrayBuilder.build().toString());
+            }
+    }
+
+    @GetMapping(path = "/posts/search")
+    public ResponseEntity<String> searchTweets(@RequestParam String search) {
+
+        Response resp;
+
+        List<Tweet> tweets = tweetSvc.searchTweets(search);
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (Tweet tweet: tweets) {
             arrayBuilder.add(Tweet.toJson(tweet));

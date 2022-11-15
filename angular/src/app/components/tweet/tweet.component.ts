@@ -19,6 +19,7 @@ export class TweetComponent implements OnInit {
   replies: Tweet[] = []
   replyForm!: FormGroup
   loggedUser = JSON.parse(localStorage.getItem('currentUser')!)
+  
 
   constructor(
     private tweetSvc: TweetService,
