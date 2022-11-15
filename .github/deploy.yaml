@@ -1,4 +1,4 @@
-name: Deploy to Heroku
+name: Deployment to Heroku
 on:
   push:
     branches:
@@ -7,12 +7,12 @@ jobs:
   deploy_to_heroku:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout src
-        uses: actions/checkout@v3
-      - name: Deploy
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{ secrets.heroku.api.key }}
-          heroku_app_name: "tweeter"
-          heroku_email: ${{ secrets.heroku.email }}
-          appdir: "backend"
+    - name: Checkout src
+      uses: actions/checkout@v3
+    - name: Deploy
+      uses: akhileshns/heroku-deploy@v3.12.12 
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "tweeter"
+        heroku_email: ${{secrets.HEROKU_EMAIL}}
+        appdir: "backend"
