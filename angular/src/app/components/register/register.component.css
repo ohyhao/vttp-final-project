@@ -1,0 +1,42 @@
+body, html{
+    height: 100vh;
+    font-family: Roboto;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	height: 80vh;
+}
+
+input {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	box-sizing: border-box;
+	margin-top: 5px;
+	margin-bottom: 10px;
+	resize: vertical;
+}
+
+.password-container{
+	width: 400px;
+	position: relative;
+  }
+
+/* .password-container input[type="password"],
+.password-container input[type="text"]{
+	width: 100%;
+	padding: 12px 36px 12px 12px;
+	box-sizing: border-box;
+} */
+
+.fa-eye{
+	position: absolute;
+	top: 30%;
+	right: 5%;
+	cursor: pointer;
+	color: lightgray;
+  }

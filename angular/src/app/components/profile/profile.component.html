@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <ng-template #content let-modal>
+        <div *ngIf="loggedUser.username == profileOwner.username">            
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">Upload Profile Picture</h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="form" (submit)="upload()">
+                    <input type="file" accept="image/*" formControlName="image-file" #file ngModel (change)="setImageFileValue($event)">
+                    <button type="submit" class="btn btn-outline-dark" (click)="modal.close('Save click')" [disabled]="form.invalid">Upload</button>
+                </form>
+            </div>
+        </div>
+    </ng-template>
+    <mat-drawer-container class="container" >
+        <mat-drawer mode="side" opened class="drawer">
+            <div>
+                <div>
+                    <img src="assets/svg/logo.png" class="logo">
+                </div>           
+                <div [routerLink]="'/home'" class="sidebar-item active">
+                    <img src="assets/svg/home.svg" class="sidebar-item-icon">
+                    <div class="icon-label">Home</div>
+                </div>
+                <div [routerLink]="['/', loggedUser.username]" class="sidebar-item">
+                    <img src="assets/svg/profile.svg" class="sidebar-item-icon">
+                    <div class="icon-label">Profile</div>
+                </div>
+                <div class="sidebar-item">
+                    <img src="assets/svg/more.svg" class="sidebar-item-icon">
+                    <div class="icon-label">More</div>
+                </div>
+            </div>
+            <div>
+                <button class="logout-btn" (click)="logout()">Logout</button>
+            </div>
+        </mat-drawer>
+
+        <mat-drawer-content class="drawer-content">
+            <mat-card class="card">
+                <mat-card-header></mat-card-header>
+                    <img mat-card-image [src]="'https://vttp-final-project.sgp1.digitaloceanspaces.com/profile-pic/'+ profileOwner.username" 
+                         onerror="this.src = 'assets/svg/profile.svg'" class="header-photo" (click)="open(content)">
+                    <div class="username">@{{profileOwner.username}}</div>
+                    <div class="tweets-counter-container">{{profileOwner.name}} 
+                        <span class="tweets-counter">{{ tweetCount.count }} Tweets</span>
+                    </div>
+            </mat-card>
+
+            <div class="navbar">
+                <div class="navbar-item" [routerLink]="'/' + username + '/tweets'"
+                    >Tweets</div>
+                <div class="navbar-item" [routerLink]="'/' + username + '/retweets'"
+                    >Retweets</div>
+                <div class="navbar-item" [routerLink]="'/' + username + '/replies'"
+                    >Replies</div>
+                <div class="navbar-item" [routerLink]="'/' + username + '/likes'" 
+                    >Likes</div>
+            </div>
+            
+            <div *ngIf="router.url === '/' + username + '/tweets'">
+                <div *ngIf="tweets.length === 0">
+                    <mat-card class="card">
+                        <mat-card-content class="card-content" style="font-size: 15px; justify-content: center; text-align: center;">There are no tweets!</mat-card-content>
+                    </mat-card >
+                </div>
+                <div *ngFor="let tweet of tweets" >
+                    <mat-card class="card">
+                        <mat-card-header>
+                            <img mat-card-avatar [src]="'https://vttp-final-project.sgp1.digitaloceanspaces.com/profile-pic/' + tweet.username" onerror="this.src = 'assets/svg/profile.svg'" [routerLink]="['/', tweet.username]">
+                            <mat-card-title>{{ tweet.name }}</mat-card-title>
+                            <mat-card-subtitle class="card-subtitle" [routerLink]="['/', tweet.username]">@{{ tweet.username }}</mat-card-subtitle>
+                            <mat-card-subtitle class="card-subtitle">{{ tweet.date_created }}</mat-card-subtitle>
+                        </mat-card-header>
+                        <mat-card-content class="card-content" [routerLink]="['/tweet/', tweet.username, tweet.id]">{{ tweet.tweet }}</mat-card-content>
+                        <mat-card-actions>
+                            <div>
+                                <img src="assets/svg/comments.svg" width="20" height="20" style="margin-left: 20%;" (click)="onClick(tweet.id)"> {{ tweet.replies }}
+                                <img src="assets/svg/retweet.svg" width="20" height="20" style="margin-left: 10%;" (click)="retweetTweet(tweet.id)"> {{ tweet.retweets }}
+                                <img src="assets/svg/like.svg" width="20" height="20" style="margin-left: 10%;" (click)="likeTweet(tweet.id)"> {{ tweet.likes }}
+                                <img src="assets/svg/delete.png" width="20" height="20" style="margin-left: 10%;" [hidden]="tweet.username != loggedUser.username" (click)="deleteTweet(tweet.id)">
+                                <div *ngIf="tweet.showForm">
+                                    <form id="replyForm" [formGroup]="replyForm" (show)="tweet.showForm">
+                                        <textarea formControlName="reply" id="text-area" class="tweet-form__text-area" name="text-area" rows="4"
+                                        cols="50" placeholder="Tweet your reply" style="width: 27vw; margin-top: 10px;" required></textarea>
+                                    </form>
+                                    <div class="tweet-form__footer">
+                                        <input class="tweet-form__footer-button" type="button" form="replyForm" value="Reply" 
+                                            (click)="replyTweet(tweet.id)" [disabled]="replyForm.invalid">
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+            </div>
+            <div *ngIf="router.url === '/' + username  + '/retweets'">
+                <div *ngIf="tweets.length === 0">
+                    <mat-card class="card">
+                        <mat-card-content class="card-content" style="font-size: 15px; justify-content: center; text-align: center;">There are no retweets!</mat-card-content>
+                    </mat-card >
+                </div>
+                <div *ngFor="let tweet of tweets" >
+                    <mat-card class="card">
+                        <mat-card-header>
+                            <img mat-card-avatar [src]="'https://vttp-final-project.sgp1.digitaloceanspaces.com/profile-pic/' + tweet.username" onerror="this.src = 'assets/svg/profile.svg'" [routerLink]="['/', tweet.username]">
+                            <mat-card-title>{{ tweet.name }}</mat-card-title>
+                            <mat-card-subtitle class="card-subtitle" [routerLink]="['/', tweet.username]">@{{ tweet.username }}</mat-card-subtitle>
+                            <mat-card-subtitle class="card-subtitle">{{ tweet.date_created }}</mat-card-subtitle>
+                        </mat-card-header>
+                        <mat-card-content class="card-content" [routerLink]="['/tweet/', tweet.username, tweet.id]">{{ tweet.tweet }}</mat-card-content>
+                        <mat-card-actions>
+                            <div>
+                                <img src="assets/svg/comments.svg" width="20" height="20" style="margin-left: 20%;" (click)="onClick(tweet.id)"> {{ tweet.replies }}
+                                <img src="assets/svg/retweet.svg" width="20" height="20" style="margin-left: 10%;" (click)="retweetTweet(tweet.id)"> {{ tweet.retweets }}
+                                <img src="assets/svg/like.svg" width="20" height="20" style="margin-left: 10%;" (click)="likeTweet(tweet.id)"> {{ tweet.likes }}
+                                <img src="assets/svg/delete.png" width="20" height="20" style="margin-left: 10%;" [hidden]="tweet.username != loggedUser.username" (click)="deleteTweet(tweet.id)">
+                                <div *ngIf="tweet.showForm">
+                                    <form id="replyForm" [formGroup]="replyForm" (show)="tweet.showForm">
+                                        <textarea formControlName="reply" id="text-area" class="tweet-form__text-area" name="text-area" rows="4"
+                                        cols="50" placeholder="Tweet your reply" style="width: 27vw; margin-top: 10px;" required></textarea>
+                                    </form>
+                                    <div class="tweet-form__footer">
+                                        <input class="tweet-form__footer-button" type="button" form="replyForm" value="Reply" 
+                                            (click)="replyTweet(tweet.id)" [disabled]="replyForm.invalid">
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+            </div>
+            <div *ngIf="router.url === '/' + username  + '/likes'">
+                <div *ngIf="tweets.length === 0">
+                    <mat-card class="card">
+                        <mat-card-content class="card-content" style="font-size: 15px; justify-content: center; text-align: center;">There are no likes!</mat-card-content>
+                    </mat-card >
+                </div>
+                <div *ngFor="let tweet of tweets" >
+                        <mat-card class="card">
+                            <mat-card-header>
+                                <img mat-card-avatar [src]="'https://vttp-final-project.sgp1.digitaloceanspaces.com/profile-pic/' + tweet.username" onerror="this.src = 'assets/svg/profile.svg'" [routerLink]="['/', tweet.username]">
+                                <mat-card-title>{{ tweet.name }}</mat-card-title>
+                                <mat-card-subtitle class="card-subtitle" [routerLink]="['/', tweet.username]">@{{ tweet.username }}</mat-card-subtitle>
+                                <mat-card-subtitle class="card-subtitle">{{ tweet.date_created }}</mat-card-subtitle>
+                            </mat-card-header>
+                            <mat-card-content class="card-content" [routerLink]="['/tweet/', tweet.username, tweet.id]">{{ tweet.tweet }}</mat-card-content>
+                            <mat-card-actions>
+                                <div>
+                                    <img src="assets/svg/comments.svg" width="20" height="20" style="margin-left: 20%;" (click)="onClick(tweet.id)"> {{ tweet.replies }}
+                                    <img src="assets/svg/retweet.svg" width="20" height="20" style="margin-left: 10%;" (click)="retweetTweet(tweet.id)"> {{ tweet.retweets }}
+                                    <img src="assets/svg/like.svg" width="20" height="20" style="margin-left: 10%;" (click)="likeTweet(tweet.id)"> {{ tweet.likes }}
+                                    <img src="assets/svg/delete.png" width="20" height="20" style="margin-left: 10%;" [hidden]="tweet.username != loggedUser.username" (click)="deleteTweet(tweet.id)">
+                                    <div *ngIf="tweet.showForm">
+                                        <form id="replyForm" [formGroup]="replyForm" (show)="tweet.showForm">
+                                            <textarea formControlName="reply" id="text-area" class="tweet-form__text-area" name="text-area" rows="4"
+                                            cols="50" placeholder="Tweet your reply" style="width: 27vw; margin-top: 10px;" required></textarea>
+                                        </form>
+                                        <div class="tweet-form__footer">
+                                            <input class="tweet-form__footer-button" type="button" form="replyForm" value="Reply" 
+                                                (click)="replyTweet(tweet.id)" [disabled]="replyForm.invalid">
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-card-actions>
+                        </mat-card>
+                </div>
+            </div>
+            <div *ngIf="router.url === '/' + username  + '/replies'">
+                <div *ngIf="tweets.length === 0">
+                    <mat-card class="card">
+                        <mat-card-content class="card-content" style="font-size: 15px; justify-content: center; text-align: center;">There are no replies!</mat-card-content>
+                    </mat-card >
+                </div>
+                <div *ngFor="let repliedTweet of repliedTweets; let i=index">                 
+                <div *ngFor="let tweet of tweets; let j=index">
+                    <div *ngIf="j === i">
+                        <mat-card class="card">
+                            <mat-card-header>
+                                <img mat-card-avatar [src]="'https://vttp-final-project.sgp1.digitaloceanspaces.com/profile-pic/' + repliedTweet.username" 
+                                    onerror="this.src = 'assets/svg/profile.svg'" [routerLink]="['/', repliedTweet.username]">
+                                <mat-card-title>{{ repliedTweet.name }}</mat-card-title>
+                                <mat-card-subtitle class="card-subtitle" [routerLink]="['/', repliedTweet.username]">@{{ repliedTweet.username }}</mat-card-subtitle>
+                                <mat-card-subtitle class="card-subtitle">{{ repliedTweet.date_created }}</mat-card-subtitle>
+                            </mat-card-header>
+                            <mat-card-content class="card-content" [routerLink]="['/tweet/', repliedTweet.username, repliedTweet.id]">{{ repliedTweet.tweet }}</mat-card-content>
+                            <mat-card-actions>
+                                <div>
+                                    <img src="assets/svg/comments.svg" width="20" height="20" style="margin-left: 20%;" (click)="onClick(repliedTweet.id)"> {{ repliedTweet.replies }}
+                                        <img src="assets/svg/retweet.svg" width="20" height="20" style="margin-left: 10%;" (click)="retweetTweet(repliedTweet.id)"> {{ repliedTweet.retweets }}
+                                        <img src="assets/svg/like.svg" width="20" height="20" style="margin-left: 10%;" (click)="likeTweet(repliedTweet.id)"> {{ repliedTweet.likes }}
+                                        <img src="assets/svg/delete.png" width="20" height="20" style="margin-left: 10%;" [hidden]="repliedTweet.username != loggedUser.username" (click)="deleteTweet(repliedTweet.id)">
+                                        <div *ngIf="repliedTweet.showForm">
+                                            <form id="replyForm" [formGroup]="replyForm" (show)="repliedTweet.showForm">
+                                                <textarea formControlName="reply" id="text-area" class="tweet-form__text-area" name="text-area" rows="4"
+                                                cols="50" placeholder="Tweet your reply" style="width: 27vw; margin-top: 10px;" required></textarea>
+                                            </form>
+                                            <div class="tweet-form__footer">
+                                                <input class="tweet-form__footer-button" type="button" form="replyForm" value="Reply" 
+                                                    (click)="replyTweet(repliedTweet.id)" [disabled]="replyForm.invalid">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-card-actions>
+                            </mat-card>
+                            <mat-card class="card">
+                                <mat-card-header>
+                                    <img mat-card-avatar [src]="'https://vttp-final-project.sgp1.digitaloceanspaces.com/profile-pic/' + tweet.username" 
+                                        onerror="this.src = 'assets/svg/profile.svg'" [routerLink]="['/', tweet.username]">
+                                    <mat-card-title>{{ tweet.name }}</mat-card-title>
+                                    <mat-card-subtitle class="card-subtitle" [routerLink]="['/', tweet.username]">@{{ tweet.username }}</mat-card-subtitle>
+                                    <mat-card-subtitle class="card-subtitle">{{ tweet.date_created }}</mat-card-subtitle>
+                                    <mat-card-subtitle class="card-subtitle">Replying to @{{ repliedTweet.username }}</mat-card-subtitle>
+                                </mat-card-header>
+                                <mat-card-content class="card-content" [routerLink]="['/tweet/', tweet.username, tweet.id]">{{ tweet.tweet }}</mat-card-content>
+                                <mat-card-actions>
+                                    <div>
+                                        <img src="assets/svg/comments.svg" width="20" height="20" style="margin-left: 20%;" (click)="onClick(tweet.id)"> {{ tweet.replies }}
+                                        <img src="assets/svg/retweet.svg" width="20" height="20" style="margin-left: 10%;" (click)="retweetTweet(tweet.id)"> {{ tweet.retweets }}
+                                        <img src="assets/svg/like.svg" width="20" height="20" style="margin-left: 10%;" (click)="likeTweet(tweet.id)"> {{ tweet.likes }}
+                                        <img src="assets/svg/delete.png" width="20" height="20" style="margin-left: 10%;" [hidden]="tweet.username != loggedUser.username" (click)="deleteTweet(tweet.id)">
+                                        <div *ngIf="tweet.showForm">
+                                            <form id="replyForm" [formGroup]="replyForm" (show)="tweet.showForm">
+                                                <textarea formControlName="reply" id="text-area" class="tweet-form__text-area" name="text-area" rows="4"
+                                                cols="50" placeholder="Tweet your reply" style="width: 27vw; margin-top: 10px;" required></textarea>
+                                            </form>
+                                            <div class="tweet-form__footer">
+                                                <input class="tweet-form__footer-button" type="button" form="replyForm" value="Reply" 
+                                                    (click)="replyTweet(tweet.id)" [disabled]="replyForm.invalid">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-card-actions>
+                            </mat-card>
+                    </div>
+                </div>
+                </div>
+            </div>
+            
+            
+        </mat-drawer-content>
+    </mat-drawer-container> 
+</body>
+
+</html>

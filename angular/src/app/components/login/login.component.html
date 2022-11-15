@@ -1,0 +1,41 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+<html>
+    <header>
+        <mat-toolbar>
+            <span>Tweeter</span>
+        </mat-toolbar>
+    </header>
+    <body class="container">
+        <form [formGroup]="loginForm" (ngSubmit)="processLogin()">
+            <div class="logo">
+                <img src="assets/svg/logo.png" style="height: 150px; width: 150px; margin: 20px;">
+            </div>
+            <table>
+                <tr>
+                    <td>Email: </td>
+                    <td><input type="email" placeholder="Email address" formControlName="email"></td>
+                </tr>
+                <tr>
+                    <td>Password: </td>
+                    <td>
+                        <div class="password-container">
+                            <input type="password" placeholder="Password" formControlName="password" [type]="showPassword ? 'text' : 'password'">
+                        <div>
+                            <i alt="show" class="far fa-eye eye-show" (click)="showPassword = !showPassword" [class.hide]="showPassword"></i>
+                        </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+                <div class="button">
+                    <div>
+                        <button type="submit" class="btn btn-dark btn-block w-100" [disabled]="loginForm.invalid">Login</button>
+
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary btn-block w-100" [routerLink]="['register']">Register</button>
+                    </div>
+                </div>
+        </form>
+    </body>
+</html>
