@@ -20,7 +20,7 @@ export class RegisterComponent implements OnInit {
   constructor(private fb: FormBuilder, private userSvc: UserService, private router: Router, private title: Title) { }
 
   ngOnInit(): void {
-    this.title.setTitle('Register')
+    this.title.setTitle('Register / Tweeter')
 
     this.registerForm = this.fb.group({
       username: this.fb.control<string>('', [ Validators.required ]),
