@@ -22,16 +22,16 @@ import { MatPaginatorModule} from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 const appRoutes: Routes = [
-  {path: '', component: LoginComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'register', component: RegisterComponent},
-  {path: 'home', component: HomeComponent},
-  {path: ':username', component: ProfileComponent},
-  {path: ':username/tweets', component: ProfileComponent},
-  {path: ':username/retweets', component: ProfileComponent},
-  {path: ':username/likes', component: ProfileComponent},
-  {path: ':username/replies', component: ProfileComponent},
-  {path: 'tweet/:username/:id', component: TweetComponent},
+  {path: '', title: 'Tweeter', component: LoginComponent},
+  {path: 'login', title: 'Tweeter', component: LoginComponent},
+  {path: 'register', title: 'Register', component: RegisterComponent},
+  {path: 'home', title: 'Home/Tweeter', component: HomeComponent},
+  {path: ':username', title: 'Profile', component: ProfileComponent},
+  {path: ':username/tweets', title: 'Profile', component: ProfileComponent},
+  {path: ':username/retweets', title: 'Profile', component: ProfileComponent},
+  {path: ':username/likes', title: 'Profile', component: ProfileComponent},
+  {path: ':username/replies', title: 'Profile', component: ProfileComponent},
+  {path: 'tweet/:username/:id', title: 'Tweet', component: TweetComponent},
   {path: '**', redirectTo: '/', pathMatch: 'full'}
 ]
 
